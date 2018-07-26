@@ -1,8 +1,11 @@
 import numpy as np # np.random :)
+np.set_printoptions(precision=2)
+
 import time # to slow the output
 
+
 ACTIONS = ['u', 'd', 'l', 'r']
-np.random.seed(1)
+np.random.seed(2)
 
 
 # build q_table 
@@ -40,7 +43,7 @@ def index_of_maximum_value(li):
 # return predicted state and predicted action
 def get_env_feedback(S, A):
     S_ = list(S)
-    R = -0.1
+    R = -0.05
     if A == 'u':
         S_[1] = S[1] - 1
     elif A == 'd':
@@ -52,11 +55,11 @@ def get_env_feedback(S, A):
     # if reach trap
     if S_ == [2, 1] or S_ == [3, 1]:
         S_ = 'trap'
-        R = -1
+        R = -3
     # if reach goal
     elif S_ == [4, 0]:
         S_ = 'goal'
-        R = 1
+        R = 10
     else:
         # if reach wall (l, r)
         if S_[0] < 0 or S_[0] > 4:
@@ -96,9 +99,10 @@ def main():
     # state starts at (0, 4)
     state = (0, 4)
     q_table = build_q_table()
-
-    for i in range(20):
+    history = []
+    for i in range(100):
         state = (0, 4)
+        update_env(state)
         is_game_over = False
         turn = 0
         while not is_game_over:
@@ -107,20 +111,33 @@ def main():
             new_state, reward = get_env_feedback(state, action)
 
             action_index = ACTIONS.index(action)
-            q_table[state][action_index] = 0.1 * reward
+            q_predict = q_table[state][action_index]
 
-
+            if new_state == tuple('trap') or new_state == tuple('goal') or turn > 99:
+                is_game_over = True
+                q_target = reward
+            else:
+                max_index = index_of_maximum_value(q_table[new_state])
+                q_target = reward + 0.9 * q_table[new_state][max_index]
+            
+            q_table[state][action_index] += 0.1 * (q_target - q_predict)
 
             #########################
-            update_env(state)
+
+            print("*" * 40)
+            #print(q_table)
             print(state, action, new_state, reward)
-            print(q_table)
-            time.sleep(0.2)
+            update_env(new_state)
+            time.sleep(0.02)
             state = new_state
-            if state == tuple('trap') or state == tuple('goal') or turn > 19:
+
+            # check if game over
+            if state == tuple('trap') or state == tuple('goal') or turn > 99:
                 is_game_over = True
         print(f"-------- game '{i + 1}' over after '{turn}' turns passed --------")
-        time.sleep(2)
+        history.append(turn)
+        time.sleep(0.5)
+    print(history)
 
 
 if __name__ == "__main__":
