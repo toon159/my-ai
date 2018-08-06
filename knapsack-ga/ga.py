@@ -5,12 +5,13 @@ import random
 import numpy as np
 
 # Item i has weight[i] and values[i]
-ITEMS_NAMES = np.array(['drinking water', 'gaming laptop', 'canned food', 'torch', 'knife', 'sleeping bag'])
-ITEMS_WEIGHTS = np.array([10, 15, 8, 5, 1, 20])
-ITEMS_VALUES = np.array([8, 6, 11, 5, 3, 20])
+ITEMS_NAMES = np.array(['drinking water', 'gaming laptop', 'canned food', 'torch', 'knife', 'phone'])
+ITEMS_WEIGHTS = np.array([10, 15, 8, 5, 1, 2])
+ITEMS_VALUES = np.array([8, 6, 11, 5, 3, 1])
 WEIGHT_LIMIT = 30
 
 POP_SIZE = 6
+
 
 # create pops array with random genes
 def create_pops():
@@ -25,17 +26,19 @@ def create_pops():
 
 def cal_value(pops):
     pops_value = []
-    # pops = list(pops)
+    pops = list(pops)
     # check bag value
+    # print('cal_value', type(pops), pops)
     for gene in pops:
         total_weight = sum(gene * ITEMS_WEIGHTS)
         total_value = sum(gene * ITEMS_VALUES)
-        #check if too heavy
+        # check if too heavy
         if total_weight > WEIGHT_LIMIT:
             pops_value.append(-1)
         else:
             pops_value.append(total_value)
     return pops_value
+
 
 def show_summary(pops):
     pops_value = cal_value(pops)
@@ -45,6 +48,7 @@ def show_summary(pops):
         pop_weight = sum(pop * ITEMS_WEIGHTS)
         picked = pop == 1
         print(f'No.{i} has {pop_weight} weight and gets {pop_value} scores by picked {ITEMS_NAMES[picked]}')
+
 
 def select_top_2(pops):
     # sort
@@ -64,6 +68,7 @@ def select_top_2(pops):
     pops_list = (max1_gene, max2_gene)  # pack them into a tuple
     return pops_list
 
+
 def flip_bit(l, pos):
     bit = l[pos]
     if bit == 0:
@@ -72,19 +77,22 @@ def flip_bit(l, pos):
         l[pos] = 0
     return list
 
+
 def mutation(pops):
-    print(pops, type(pops))
+    print('mutation', type(pops), pops)
     for pop in pops:
         if np.random.rand() > 0.9:
             ran_num = np.random.randint(len(pop))
-            pop = flip_bit(pop, ran_num)
+            pops = flip_bit(pop, ran_num)
     return pops
+
 
 def single_point_crossover(parents):
     p1, p2 = parents
     for i in range(3):
         p1[i], p2[i] = p2[i], p1[i]
     return p1, p2
+
 
 def two_point_crossover(parents):
     p1, p2 = parents
@@ -98,25 +106,27 @@ def two_point_crossover(parents):
     return p1, p2
 
 def crossover(parents):
-    c1, c2 = single_point_crossover(parents)
-    c3, c4 = two_point_crossover(parents)
+    temp = list(parents)
+    c1, c2 = list(single_point_crossover(temp))
+    c3, c4 = list(two_point_crossover(temp))
     children = parents[0], parents[1], c1, c2, c3, c4
     return children
 
 
+def to_next_gen(top):
+    new_pops = list(top)
+    new_pops = list(crossover(new_pops))
+    new_pops = list(mutation(new_pops))
+    return new_pops
 
-def to_next_gen(no1, no2):
-    pops = no1, no2
-    pops = crossover(pops)
-    pops = mutation(pops)
-    return pops
 
 pops = create_pops()
 pops_value = cal_value(pops)
 # print(pops, '\n', pops_value)
 show_summary(pops)
-no1, no2 = select_top_2(pops)
-print(select_top_2(pops))
-pops = to_next_gen(no1, no2)
+top2 = select_top_2(pops)
+print('main', top2)
+pops = to_next_gen(top2)
 show_summary(pops)
-print(select_top_2(pops))
+top2 = select_top_2(pops)
+print('main2', top2)
