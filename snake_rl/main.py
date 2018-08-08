@@ -1,29 +1,30 @@
 import time as t
-
 import numpy as np
 import pandas as pd
-
-import snake as sn
+import snake
 
 TABLE_WIDTH = 5
 ACTIONS = [0, 1, 2, 3] # 0 up, 1 down, 2 left, 3 right
+
+
+def add_food(state):
+    empty = []
+    index = 0
+    # find all empty space
+    for i in state:
+        if i == 0:
+            empty.append(index)
+        index += 1
+    food_index = np.random.choice(empty) # then select randomly
+    state[food_index] = 3 # set the selected to be 3
+    return state
+
 
 def init_state():
     state = np.zeros((25,), dtype=int)
     state[12] = 1
     state = add_food(state)
     print(state) # temp
-    return state
-
-def add_food(state):
-    empty = []
-    index = 0
-    for i in state:
-        if i == 0:
-            empty.append(index)
-        index += 1
-    food_index = np.random.choice(empty)
-    state[food_index] = 3
     return state
 
 
@@ -54,9 +55,11 @@ def body_5x5(state):
         l_.append(to5x5(i))
     return l_
 
-
-def get_env_feedback(state, action):
-    snake = []
+'''
+def get_env_feedback(state, action, snake):
+    if len(snake) == 1: # only head
+        if action == 0:
+    elif len(snake) == 2: # only head and tail; no body
     body = state == 2
     b_index = []
     for i, j in enumerate(body):
@@ -69,10 +72,10 @@ def get_env_feedback(state, action):
     state_ = state.reshape(5, 5) # state_ is a reshape version
     reward = -0.1
 
-    pos_head = to5x5([state].index(1))
-    pos_body = list_to5x5(state)
-    pos_food = body_5x5(state)
-    pos_tail = to5x5(state.index(4))
+    pos_head = 
+    pos_body = 
+    pos_food = 
+    pos_tail = 
     for row in range(TABLE_WIDTH):
         for col in range(TABLE_WIDTH):
             if [row, col] == pos_food:
@@ -85,7 +88,7 @@ def get_env_feedback(state, action):
     new_state = state_.reshape(1,)
 
     return new_state, reward
-
+'''
 
 def update_env(state):
     state_ = state.reshape(5, 5)
@@ -102,20 +105,21 @@ def update_env(state):
             elif val == 3: # food
                 print('o', end=' ')
             elif val == 4: # tail
-                print('x')
+                print('t')
         print('')
 
 
 
 def main():
     q_table = {}
+    snake = snake([12])
     last_action = set([])
     state = init_state()
     update_env(state)
     game_over = False
     while not game_over:
         action = choose_action(state, q_table, last_action)
-        state_, reward = get_env_feedback(state, action)
+        # state_, reward = get_env_feedback(state, action, snake)
         this_q = q_table[state][action]
         game_over = True
 
