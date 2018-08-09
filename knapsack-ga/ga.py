@@ -10,7 +10,7 @@ ITEMS_WEIGHTS = np.array([10, 15, 8, 5, 1, 2])
 ITEMS_VALUES = np.array([8, 6, 11, 5, 3, 1])
 WEIGHT_LIMIT = 30
 
-POP_SIZE = 6
+POP_SIZE = 100
 
 
 # create pops array with random genes
@@ -28,7 +28,6 @@ def cal_value(pops):
     pops_value = []
     pops = list(pops)
     # check bag value
-    # print('cal_value', type(pops), pops)
     for gene in pops:
         total_weight = sum(gene * ITEMS_WEIGHTS)
         total_value = sum(gene * ITEMS_VALUES)
@@ -81,21 +80,24 @@ def flip_bit(l, pos):
 def mutation(pops):
     print('mutation', type(pops), pops)
     for pop in pops:
-        if np.random.rand() > 0.9:
+        if np.random.rand() >= 0.8:
             ran_num = np.random.randint(len(pop))
-            pops = flip_bit(pop, ran_num)
+            pop = flip_bit(pop, ran_num)
+            print(f"mutate {pop}")
     return pops
 
 
 def single_point_crossover(parents):
-    p1, p2 = parents
+    p1 = list(parents[0])
+    p2 = list(parents[1])
     for i in range(3):
         p1[i], p2[i] = p2[i], p1[i]
     return p1, p2
 
 
 def two_point_crossover(parents):
-    p1, p2 = parents
+    p1 = list(parents[0])
+    p2 = list(parents[1])
     for j in range(3):
         for i in range(2):
             if j == 1:
@@ -104,6 +106,7 @@ def two_point_crossover(parents):
                 x = j * 2 + i
                 p1[x], p2[x] = p2[x], p1[x]
     return p1, p2
+
 
 def crossover(parents):
     temp = list(parents)
@@ -114,19 +117,23 @@ def crossover(parents):
 
 
 def to_next_gen(top):
-    new_pops = list(top)
-    new_pops = list(crossover(new_pops))
-    new_pops = list(mutation(new_pops))
+    new_pops = top
+    new_pops = crossover(new_pops)
+    new_pops = mutation(new_pops)
     return new_pops
 
 
 pops = create_pops()
 pops_value = cal_value(pops)
-# print(pops, '\n', pops_value)
 show_summary(pops)
-top2 = select_top_2(pops)
-print('main', top2)
-pops = to_next_gen(top2)
-show_summary(pops)
-top2 = select_top_2(pops)
-print('main2', top2)
+
+
+for i in range(9999):
+    print(f'generation {i+2} : ')
+    top2 = select_top_2(pops)
+    pops_ = to_next_gen(top2)
+    pops_value = cal_value(pops_)
+    show_summary(pops_)
+    pops = pops_
+    if max(pops_value) > 28:
+        break

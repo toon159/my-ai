@@ -7,7 +7,9 @@ def flip_bit(l, pos):
     return list
 
 def s(parents):
-    p1, p2 = parents
+    p1 = list(parents[0])
+    p2 = list(parents[1])
+
     for i in range(3):
         p1[i], p2[i] = p2[i], p1[i]
     return p1, p2
@@ -38,3 +40,5 @@ k = single_point_crossover(k1)
 k2 = list(parents)
 s = s(k2)
 print(s)
+
+print(k1 is parents)
