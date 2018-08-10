@@ -8,7 +8,9 @@ import numpy as np
 ITEMS_NAMES = np.array(['drinking water', 'gaming laptop', 'canned food', 'torch', 'knife', 'phone'])
 ITEMS_WEIGHTS = np.array([10, 15, 8, 5, 1, 2])
 ITEMS_VALUES = np.array([8, 6, 11, 5, 3, 1])
+
 WEIGHT_LIMIT = 30
+MUTATION_RATE = 0.2
 
 POP_SIZE = 100
 
@@ -80,7 +82,7 @@ def flip_bit(l, pos):
 def mutation(pops):
     print('mutation', type(pops), pops)
     for pop in pops:
-        if np.random.rand() >= 0.8:
+        if np.random.rand() < MUTATION_RATE:
             ran_num = np.random.randint(len(pop))
             pop = flip_bit(pop, ran_num)
             print(f"mutate {pop}")
@@ -128,12 +130,14 @@ pops_value = cal_value(pops)
 show_summary(pops)
 
 
-for i in range(9999):
+for i in range(0):
     print(f'generation {i+2} : ')
     top2 = select_top_2(pops)
     pops_ = to_next_gen(top2)
     pops_value = cal_value(pops_)
     show_summary(pops_)
     pops = pops_
-    if max(pops_value) > 28:
+    high_score = max(pops_value)
+    if high_score > 28:
         break
+    print('*' * 30, f'The highest score is {high_score} !!!!', '*' * 30, '\n')
