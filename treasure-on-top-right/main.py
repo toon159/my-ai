@@ -96,26 +96,23 @@ def index_in_list(li, value):
 
 
 def main():
-    # state starts at (0, 4)
-    state = (0, 4)
     q_table = build_q_table()
-    history = []
-    for i in range(100):
-        state = (0, 4)
-        update_env(state)
+    history = [] # collect its history
+    for i in range(100): # 100 rounds
+        state = (0, 4) # state starts at (0, 4)
+        update_env(state) # show to screen
         is_game_over = False
         turn = 0
         while not is_game_over:
             turn += 1
-            action = choose_action(state, q_table, ACTIONS)
-            new_state, reward = get_env_feedback(state, action)
+            action = choose_action(state, q_table, ACTIONS) # choose action from the q-table
+            new_state, reward = get_env_feedback(state, action) # then find the next state and the reward given from that state
+            action_index = ACTIONS.index(action) # convert action from string to int
+            q_predict = q_table[state][action_index] # find the predicted q
 
-            action_index = ACTIONS.index(action)
-            q_predict = q_table[state][action_index]
-
-            if new_state == tuple('trap') or new_state == tuple('goal') or turn > 99:
+            if new_state == tuple('trap') or new_state == tuple('goal') or turn > 99: # check if this turn is the end of the round
                 is_game_over = True
-                q_target = reward
+                q_target = reward # target q is the reward from above
             else:
                 max_index = index_of_maximum_value(q_table[new_state])
                 q_target = reward + 0.9 * q_table[new_state][max_index]
@@ -125,8 +122,7 @@ def main():
             #########################
 
             print("*" * 40)
-            #print(q_table)
-            print(state, action, new_state, reward)
+            print(state, action, new_state, reward) # print(q_table)
             update_env(new_state)
             time.sleep(0.02)
             state = new_state
@@ -135,9 +131,9 @@ def main():
             if state == tuple('trap') or state == tuple('goal') or turn > 99:
                 is_game_over = True
         print(f"-------- game '{i + 1}' over after '{turn}' turns passed --------")
-        history.append(turn)
-        time.sleep(0.5)
-    print(history)
+        history.append(turn) # add history
+        time.sleep(0.5) # pause to show how the round was end
+    print(history) # end of 100 rounds, show the whole history
 
 
 if __name__ == "__main__":
