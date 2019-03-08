@@ -103,6 +103,7 @@ def main():
         update_env(state) # show to screen
         is_game_over = False
         turn = 0
+        output = ''
         while not is_game_over:
             turn += 1
             action = choose_action(state, q_table, ACTIONS) # choose action from the q-table
@@ -122,17 +123,26 @@ def main():
             #########################
 
             print("*" * 40)
+
+            if new_state == tuple('trap'):
+                output = '...DEAD...'
+            elif new_state == tuple('goal'):
+                output = '****** GOAL!!! ******'
+            else:
+                output = new_state
+
             print(state, action, new_state, reward) # print(q_table)
             update_env(new_state)
-            time.sleep(0.02)
+            time.sleep(0.01)
             state = new_state
 
             # check if game over
             if state == tuple('trap') or state == tuple('goal') or turn > 99:
                 is_game_over = True
+        print(output)
         print(f"-------- game '{i + 1}' over after '{turn}' turns passed --------")
         history.append(turn) # add history
-        time.sleep(0.5) # pause to show how the round was end
+        time.sleep(0.2) # pause to show how the round was end
     print(history) # end of 100 rounds, show the whole history
 
 

@@ -3,7 +3,8 @@ from jmetal.operator import Polynomial, SBX, BinaryTournamentSelection
 from jmetal.component import RankingAndCrowdingDistanceComparator, BasicAlgorithmObserver
 
 from jmetal.problem import ZDT1
-problem=ZDT1()
+
+
 algorithm = NSGAII(
    problem=ZDT1(),
    population_size=100,
@@ -15,5 +16,4 @@ algorithm = NSGAII(
 
 algorithm.run()
 front = algorithm.get_result()
-basic = BasicAlgorithmObserver(frequency=1.0)
-algorithm.observable.register(observer=basic)
+print(front)
