@@ -1,7 +1,9 @@
-class Animal{
-     private String name;
-     private double averageWeight;
-     private int numberOfLegs;
+package Animal;
+
+class Animal {
+    private String name;
+    private double averageWeight;
+    private int numberOfLegs;
 
     public String getName() {
         return name;
