@@ -1,6 +1,6 @@
 package Animal;
 
-class Animal {
+public class Animal {
     private String name;
     private double averageWeight;
     private int numberOfLegs;
@@ -26,6 +26,11 @@ class Animal {
     }
 
     public void setNumberOfLegs(int numberOfLegs) {
+
         this.numberOfLegs = numberOfLegs;
+    }
+
+    public void eat() {
+        System.out.println("This animal eats insects.");
     }
 }
