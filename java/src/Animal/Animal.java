@@ -33,4 +33,37 @@ public class Animal {
     public void eat() {
         System.out.println("This animal eats insects.");
     }
+
+    public static class AnimalBuilder {
+
+        private String name;
+        private double averageWeight;
+        private int numberOfLegs;
+
+        public AnimalBuilder() {
+        }
+
+        public AnimalBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public AnimalBuilder setAverageWeight(double averageWeight) {
+            this.averageWeight = averageWeight;
+            return this;
+        }
+
+        public AnimalBuilder setNumberOfLegs(int numberOfLegs) {
+            this.numberOfLegs = numberOfLegs;
+            return this;
+        }
+
+        public Animal build(){
+            Animal a = new Animal();
+            a.averageWeight = this.averageWeight;
+            a.name = this.name;
+            a.numberOfLegs = this.numberOfLegs;
+            return a;
+        }
+    }
 }
